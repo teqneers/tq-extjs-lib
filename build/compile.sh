@@ -2,7 +2,7 @@
 PATH_SCRIPT=$(cd "$(dirname "$0")"; pwd)
 PATH_BASE=`dirname "$PATH_SCRIPT"`
 
-sencha compile --classpath=$PATH_BASE/src/,$PATH_BASE/extjs/ \
+sencha compile --classpath=$PATH_BASE/src/,$PATH_BASE/extjs-sdk/ \
     exclude -namespace Ext and \
     exclude -tag core and \
     exclude -tag foundation and \
