@@ -1,0 +1,13 @@
+{
+    "--title": "TQ Ext JS Component Library Docs",
+    "--welcome": "./welcome/welcome.html",
+    "--warnings": [],
+    "--builtin-classes": true,
+    "--external": ["Ext*"],
+    "--categories": "./docs-categories.json",
+    "--eg-iframe": "./eg-iframe.html",
+    "--output": "./docs",
+    "--": [
+        "./src"
+    ]
+}

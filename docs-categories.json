@@ -1,0 +1,30 @@
+[
+    {
+        "name":   "Components",
+        "groups": [
+            {
+                "name":    "Buttons",
+                "classes": [
+                    "TQ.button.*"
+                ]
+            }
+        ]
+    },
+    {
+        "name":   "Utilities",
+        "groups": [
+            {
+                "name":    "Strings",
+                "classes": [
+                    "TQ.String"
+                ]
+            },
+            {
+                "name":    "Math",
+                "classes": [
+                    "TQ.math.*"
+                ]
+            }
+        ]
+    }
+]

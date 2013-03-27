@@ -1,0 +1,11 @@
+.idea/
+
+.DS_Store
+
+# Thumbnails
+._*
+
+.Spotlight-V100
+.Trashes
+
+extjs

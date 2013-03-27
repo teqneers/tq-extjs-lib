@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='TQ-button-Url'>/**
+</span> * Url-Button
+ *
+ * This simple button extension takes an {@link #url} parameter
+ * and redirects the user to this url on clicking the button.
+ *
+ * Example:
+ *      @example
+ *      Ext.create('TQ.button.Url', {
+ *          text: 'Take me to Google, please!',
+ *          url: 'http://www.google.com',
+ *          renderTo: document.body
+ *      });
+ *
+ */
+Ext.define('TQ.button.Url', {
+	extend: 'Ext.button.Button',
+	alias: 'widget.tq-urlbutton',
+
+<span id='TQ-button-Url-cfg-url'>    /**
+</span>     * @cfg {String} url
+     * The URL to which the user will be redirected.
+     */
+	url: null,
+
+<span id='TQ-button-Url-method-handler'>    /**
+</span>     * Handles the button click.
+     * @param   {TQ.button.Url}     b   This button.
+     * @param   {Ext.EventObject}   e   The click event.
+     * @protected
+     */
+	handler: function(b, e) {
+		if(b.url) {
+			window.location.href = b.url;
+		}
+	}
+});</pre>
+</body>
+</html>
