@@ -19,6 +19,7 @@ Ext.define('TQ.String', {
 				if (pos >= 0) {
 					var spannode	= document.createElement('span'),
 					    middlebit	= node.splitText(pos),
+                        endbit	    = middlebit.splitText(search.length)
 					    middleclone	= middlebit.cloneNode(true);
 
 					spannode.className	= cls || 'tq-search-highlight';

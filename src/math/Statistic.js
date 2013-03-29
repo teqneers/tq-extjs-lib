@@ -54,7 +54,7 @@ Ext.define('TQ.math.Statistic', {
 		},
 
         /**
-         * Calculates the [variance][1] of the passed data array.
+         * Calculates the population [variance][1] of the passed data array.
          *
          * [1]: http://en.wikipedia.org/wiki/Variance
          *
@@ -73,7 +73,7 @@ Ext.define('TQ.math.Statistic', {
 		},
 
         /**
-         * Calculates the [standard deviation][1] of the passed data array.
+         * Calculates the population [standard deviation][1] of the passed data array.
          *
          * [1]: http://en.wikipedia.org/wiki/Standard_deviation
          *
