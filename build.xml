@@ -1,0 +1,52 @@
+<project name="tq-extjs-lib" default="build" basedir=".">
+    <property name="build.docs.config.dir" location="${basedir}/config"/>
+    <property name="build.docs.out.dir" location="${basedir}/docs"/>
+    <property name="build.test.dir" location="${basedir}/test"/>
+
+    <property file="${basedir}/default.properties"/>
+    <property file="${basedir}/default.properties.dist"/>
+
+    <target name="init-all">
+        <echo>build.docs.config.dir: ${build.docs.config.dir}</echo>
+        <echo>build.docs.out.dir: ${build.docs.out.dir}</echo>
+        <echo>build.test.dir: ${build.test.dir}</echo>
+        <echo>cmd.sencha: ${cmd.sencha}</echo>
+        <echo>cmd.jsduck: ${cmd.jsduck}</echo>
+        <echo>cmd.phantomjs: ${cmd.phantomjs}</echo>
+        <echo>test.url: ${test.url}</echo>
+    </target>
+
+    <target name="compile" depends="init-all">
+        <exec dir="${basedir}" executable="${cmd.sencha}">
+            <arg value="compile"/>
+            <arg value="--classpath=${basedir}/src/,${basedir}/extjs-sdk/"/>
+            <arg line="exclude -namespace Ext
+                       and
+                       exclude -tag core
+                       and
+                       exclude -tag foundation
+                       and concat ${basedir}/tq-all-debug-w-comments.js
+                       and -debug=true concat -strip ${basedir}/tq-all-debug.js
+                       and -debug=false concat -yui ${basedir}/tq-all.js"/>
+        </exec>
+    </target>
+
+    <target name="docs" depends="compile">
+        <exec dir="${basedir}" executable="${cmd.jsduck}">
+            <arg line="--config ${build.docs.config.dir}/docs.json"/>
+            <arg line="--output ${build.docs.out.dir}"/>
+        </exec>
+    </target>
+
+    <target name="test" depends="compile">
+        <exec dir="${basedir}" executable="${cmd.phantomjs}">
+            <arg value="${build.test.dir}/run-jasmine.js"/>
+            <arg value="${test.url}"/>
+        </exec>
+    </target>
+
+    <target name="build" depends="compile,docs,test">
+
+    </target>
+
+</project>
