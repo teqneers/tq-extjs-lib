@@ -1,0 +1,5 @@
+.#{$prefix}search-highlight {
+	background-color: $string-search-highlight-color !important;
+	@include border-radius(3px);
+	padding: 0 1px;
+}

@@ -10,4 +10,6 @@
 
 /extjs-sdk
 
+/styles/sass/.sass-cache/
+
 /default.properties

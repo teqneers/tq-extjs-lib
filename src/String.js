@@ -4,7 +4,7 @@
  * Example:
  *      @example
  *      Ext.DomHelper.append(document.body, '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam</p>');
- *      TQ.String.highlight(document.body, 'ipsum', 'error');
+ *      TQ.String.highlight(document.body, 'ipsum');
  */
 Ext.define('TQ.String', {
     statics: {

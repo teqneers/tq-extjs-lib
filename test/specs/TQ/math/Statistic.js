@@ -18,16 +18,34 @@ describe('TQ.math.Statistic', function() {
         expect(result).toBeCloseTo(8.25, 2);
     });
 
+    it('calculates the sample variance of an array of numbers', function() {
+        var data    = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
+            result  = TQ.math.Statistic.variance(data, true);
+        expect(result).toBeCloseTo(9.16667, 5);
+    });
+
     it('calculates the population standard deviation of an array of numbers', function() {
         var data    = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
             result  = TQ.math.Statistic.standardDeviation(data);
         expect(result).toBeCloseTo(2.87228, 5);
     });
 
-    it('calculates the coefficient of variation of an array of numbers', function() {
+    it('calculates the sample standard deviation of an array of numbers', function() {
+        var data    = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
+            result  = TQ.math.Statistic.standardDeviation(data, true);
+        expect(result).toBeCloseTo(3.02765, 5);
+    });
+
+    it('calculates the population coefficient of variation of an array of numbers', function() {
         var data    = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
             result  = TQ.math.Statistic.coefficientOfVariation(data);
         expect(result).toBeCloseTo(0.638285, 6);
+    });
+
+    it('calculates the sample coefficient of variation of an array of numbers', function() {
+        var data    = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
+            result  = TQ.math.Statistic.coefficientOfVariation(data, true);
+        expect(result).toBeCloseTo(0.672811, 6);
     });
 
     it('calculates the minimum value of an array of numbers', function() {

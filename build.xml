@@ -2,6 +2,8 @@
     <property name="build.docs.config.dir" location="${basedir}/config"/>
     <property name="build.docs.out.dir" location="${basedir}/docs"/>
     <property name="build.test.dir" location="${basedir}/test"/>
+    <property name="build.styles.dir" location="${basedir}/styles"/>
+    <property name="build.styles.sass.dir" location="${build.styles.dir}/sass"/>
 
     <property file="${basedir}/default.properties"/>
     <property file="${basedir}/default.properties.dist"/>
@@ -10,8 +12,11 @@
         <echo>build.docs.config.dir: ${build.docs.config.dir}</echo>
         <echo>build.docs.out.dir: ${build.docs.out.dir}</echo>
         <echo>build.test.dir: ${build.test.dir}</echo>
+        <echo>build.styles.dir: ${build.styles.dir}</echo>
+        <echo>build.styles.sass.dir: ${build.styles.sass.dir}</echo>
         <echo>cmd.sencha: ${cmd.sencha}</echo>
         <echo>cmd.jsduck: ${cmd.jsduck}</echo>
+        <echo>cmd.compass: ${cmd.compass}</echo>
         <echo>cmd.phantomjs: ${cmd.phantomjs}</echo>
         <echo>test.url: ${test.url}</echo>
     </target>
@@ -45,7 +50,22 @@
         </exec>
     </target>
 
-    <target name="build" depends="compile,docs,test">
+    <target name="styles" depends="init-all">
+        <exec dir="${build.styles.sass.dir}" executable="${cmd.compass}">
+            <arg value="compile"/>
+            <arg line="--environment production"/>
+            <arg line="--force"/>
+        </exec>
+        <move file="${build.styles.dir}/all.css" tofile="${basedir}/tq-all.css"/>
+        <exec dir="${build.styles.sass.dir}" executable="${cmd.compass}">
+            <arg value="compile"/>
+            <arg line="--environment development"/>
+            <arg line="--force"/>
+        </exec>
+        <move file="${build.styles.dir}/all.css" tofile="${basedir}/tq-all-debug.css"/>
+    </target>
+
+    <target name="build" depends="docs,test,styles">
 
     </target>
 

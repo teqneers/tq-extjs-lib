@@ -1,0 +1,10 @@
+/* line 1, sass/src/_String.scss */
+.tq-search-highlight {
+  background-color: #fcf0b3 !important;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  padding: 0 1px;
+}

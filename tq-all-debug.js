@@ -4,7 +4,7 @@
  * Example:
  *      @example
  *      Ext.DomHelper.append(document.body, '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam</p>');
- *      TQ.String.highlight(document.body, 'ipsum', 'error');
+ *      TQ.String.highlight(document.body, 'ipsum');
  */
 
 Ext.define('TQ.String', {
@@ -76,27 +76,28 @@ Ext.define('TQ.math.Statistic', {
 		},
 
         
-		variance: function(data) {
-			data	= Ext.Array.from(data);
+		variance: function(data, sample) {
+			data    = Ext.Array.from(data);
 			var avg = TQ.math.Statistic.average(data),
-				i	= data.length,
-				v	= 0;
+				i   = data.length,
+                div = (sample) ? data.length - 1 : data.length,
+				v   = 0;
 			while ( i-- ) {
 				v += Math.pow( (data[ i ] - avg), 2 );
 			}
-			return (v / data.length );
+			return (v / div );
 		},
 
         
-		standardDeviation: function(data) {
+		standardDeviation: function(data, sample) {
 			data		= Ext.Array.from(data);
-			return Math.sqrt(TQ.math.Statistic.variance(data))
+			return Math.sqrt(TQ.math.Statistic.variance(data, sample))
 		},
 
         
-		coefficientOfVariation: function(data) {
+		coefficientOfVariation: function(data, sample) {
 			data		= Ext.Array.from(data);
-			var stdDev	= Math.sqrt( TQ.math.Statistic.variance(data) ),
+			var stdDev	= Math.sqrt( TQ.math.Statistic.variance(data, sample) ),
 				mean	= TQ.math.Statistic.average(data);
 			return stdDev / mean;
 		},

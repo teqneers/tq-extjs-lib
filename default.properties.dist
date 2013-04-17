@@ -1,5 +1,6 @@
 cmd.sencha      = sencha
 cmd.jsduck      = jsduck
+cmd.compass     = compass
 cmd.phantomjs   = phantomjs
 
 test.url        = http://localhost/tq-extjs-lib/test/

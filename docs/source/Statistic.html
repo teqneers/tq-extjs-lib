@@ -71,48 +71,55 @@ Ext.define('TQ.math.Statistic', {
 		},
 
 <span id='TQ-math-Statistic-method-variance'>        /**
-</span>         * Calculates the population [variance][1] of the passed data array.
+</span>         * Calculates the population or sample [variance][1] of the passed data array.
          *
          * [1]: http://en.wikipedia.org/wiki/Variance
          *
          * @param   {Number[]}  data    The data.
+         * @param   {Boolean}   sample  True to calculate the sample variance
+         *                              instead of the population variance.
          * @returns {Number}            The variance.
          */
-		variance: function(data) {
-			data	= Ext.Array.from(data);
+		variance: function(data, sample) {
+			data    = Ext.Array.from(data);
 			var avg = TQ.math.Statistic.average(data),
-				i	= data.length,
-				v	= 0;
+				i   = data.length,
+                div = (sample) ? data.length - 1 : data.length,
+				v   = 0;
 			while ( i-- ) {
 				v += Math.pow( (data[ i ] - avg), 2 );
 			}
-			return (v / data.length );
+			return (v / div );
 		},
 
 <span id='TQ-math-Statistic-method-standardDeviation'>        /**
-</span>         * Calculates the population [standard deviation][1] of the passed data array.
+</span>         * Calculates the population or sample [standard deviation][1] of the passed data array.
          *
          * [1]: http://en.wikipedia.org/wiki/Standard_deviation
          *
          * @param   {Number[]}  data    The data.
+         * @param   {Boolean}   sample  True to calculate the sample standard deviation
+         *                              instead of the population standard deviation.
          * @returns {Number}            The standard deviation.
          */
-		standardDeviation: function(data) {
+		standardDeviation: function(data, sample) {
 			data		= Ext.Array.from(data);
-			return Math.sqrt(TQ.math.Statistic.variance(data))
+			return Math.sqrt(TQ.math.Statistic.variance(data, sample))
 		},
 
 <span id='TQ-math-Statistic-method-coefficientOfVariation'>        /**
-</span>         * Calculates the [coefficient of variation][1] of the passed data array.
+</span>         * Calculates the population or sample [coefficient of variation][1] of the passed data array.
          *
          * [1]: http://en.wikipedia.org/wiki/Coefficient_of_variation
          *
          * @param   {Number[]}  data    The data.
+         * @param   {Boolean}   sample  True to calculate the sample coefficient of variation
+         *                              instead of the population coefficient of variation.
          * @returns {Number}            The coefficient of variation.
          */
-		coefficientOfVariation: function(data) {
+		coefficientOfVariation: function(data, sample) {
 			data		= Ext.Array.from(data);
-			var stdDev	= Math.sqrt( TQ.math.Statistic.variance(data) ),
+			var stdDev	= Math.sqrt( TQ.math.Statistic.variance(data, sample) ),
 				mean	= TQ.math.Statistic.average(data);
 			return stdDev / mean;
 		},
