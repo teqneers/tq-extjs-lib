@@ -164,26 +164,36 @@ Ext.define('TQ.math.Statistic', {
         /**
          * Calculates the *q* [quantile value][1] of the passed data array.
          *
-         * [1]: http://en.wikipedia.org/wiki/Quantile
+         * The method uses the [SAS Method 5][2].
          *
-         * @param   {Number}    q       The quantile rank.
+         * [1]: http://en.wikipedia.org/wiki/Quantile
+         * [2]: http://www.haiweb.org/medicineprices/manual/quartiles_iTSS.pdf
+         *
+         * @param   {Number}    p       The quantile rank
+         *                              (either as decimal 0.0 < p <= 1.0 or as percentage 1 < p <= 100).
          * @param   {Number[]}  data    The data.
          * @returns {Number}            The *q* quantile.
          */
-		quantile: function(q, data) {
-			data		= Ext.Array.from(data);
-			var count	= data.length;
+		quantile: function(p, data) {
+			data	= Ext.Array.from(data);
+			p		= (p > 1) ? p/100 : p;
+			var n	= data.length,
+				jg, j, g;
 
-			if (count == 0 || q <= 0) {
+			if (n == 0 || p <= 0) {
 				return null;
-			} else if (count == 1) {
-				return data[0];
 			}
 
 			data.sort(function(a, b) { return a - b });
+			jg	= n*p;
+			j	= Math.floor(jg);
+			g	= jg - j;
 
-			var qVal	= count * (q / 100);
-			return data[Math.round(qVal) - 1];
+			if (g > 0) {
+				return data[j+1];
+			} else {
+				return (data[j-1] + data[j]) / 2;
+			}
 		}
 	}
 });
