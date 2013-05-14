@@ -36,11 +36,14 @@
         </exec>
     </target>
 
-    <target name="docs" depends="compile">
+    <target name="docs-only" depends="init-all">
         <exec dir="${basedir}" executable="${cmd.jsduck}">
             <arg line="--config ${build.docs.config.dir}/docs.json"/>
             <arg line="--output ${build.docs.out.dir}"/>
         </exec>
+    </target>
+
+    <target name="docs" depends="compile,docs-only">
     </target>
 
     <target name="test" depends="compile">
