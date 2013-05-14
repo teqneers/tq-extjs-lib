@@ -69,7 +69,7 @@ describe('TQ.math.Statistic', function() {
     it('calculates the 75% quantile of an array of numbers', function() {
         var data    = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
             result  = TQ.math.Statistic.quantile(75, data);
-        expect(result).toBeCloseTo(7, 0);
+        expect(result).toBeCloseTo(8, 0);
     });
 
 });
