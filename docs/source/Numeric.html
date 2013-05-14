@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='TQ-grid-column-Numeric'>/**
+</span> * This file contains Javascript code to provide
+ * TEQneers specific ExtJs enhancements
+ *
+ * @author		Timo Buhmann &lt;buhmann@teqneers.de&gt;
+ * @copyright	2011/12 TEQneers GmbH &amp; Co. KG
+ * @package		TEQframework
+ * @subpackage	javascript
+ * @version		$Revision: 26090 $
+ * @internal	$Id: Numeric.js 26090 2012-07-13 08:43:56Z stephan $
+ */
+Ext.define('TQ.grid.column.Numeric', {
+	extend: 'Ext.grid.column.Number',
+	mixins: {
+        editable: 'TQ.grid.column.Editable'
+    },
+	alias:	'widget.tq-grid-column-numeric',
+
+<span id='TQ-grid-column-Numeric-property-smartFormatting'>	// smart formatting
+</span>	smartFormatting: true,
+
+<span id='TQ-grid-column-Numeric-property-maxPrecision'>	// regular formatting
+</span>	maxPrecision: 12,
+<span id='TQ-grid-column-Numeric-property-stripTrailingZeros'>	stripTrailingZeros: true,
+</span><span id='TQ-grid-column-Numeric-property-withThousands'>	withThousands: true,
+</span>
+<span id='TQ-grid-column-Numeric-property-stringWhenNull'>	stringWhenNull: '',
+</span>
+<span id='TQ-grid-column-Numeric-property-align'>	align: 'right',
+</span>
+<span id='TQ-grid-column-Numeric-property-factor'>	factor: 1,
+</span><span id='TQ-grid-column-Numeric-property-invertValue'>	invertValue: false,
+</span>
+<span id='TQ-grid-column-Numeric-property-renderPrefix'>	renderPrefix: null,
+</span><span id='TQ-grid-column-Numeric-property-renderPrefixCallback'>	renderPrefixCallback: null,
+</span><span id='TQ-grid-column-Numeric-property-renderSuffix'>	renderSuffix: null,
+</span><span id='TQ-grid-column-Numeric-property-renderSuffixCallback'>	renderSuffixCallback: null,
+</span>
+<span id='TQ-grid-column-Numeric-property-allowBlank'>	// editor attributes
+</span>	allowBlank: false,
+<span id='TQ-grid-column-Numeric-property-minValue'>	minValue: null,
+</span><span id='TQ-grid-column-Numeric-property-editorConfig'>	editorConfig: null,
+</span>
+<span id='TQ-grid-column-Numeric-property-numberRenderer'>	numberRenderer: null,
+</span>
+<span id='TQ-grid-column-Numeric-method-constructor'>	constructor: function(cfg) {
+</span>		var me = this;
+		me.callParent(arguments);
+
+		if (Ext.isFunction(me.numberRenderer)) {
+			me.numberRenderer	= me.numberRenderer;
+		} else if ( me.smartFormatting ) {
+			me.numberRenderer	= TQ.util.Format.smartNumberRenderer();
+		} else {
+			me.numberRenderer = TQ.util.Format.numberRenderer(me.maxPrecision, me.withThousands, me.stripTrailingZeros, me.maxPrecision);
+		}
+
+		var cellRenderer	= cfg.renderer;
+		if (!Ext.isFunction(cellRenderer)) {
+			cellRenderer	= function(value) {
+				return value;
+			};
+		} else {
+			delete cfg.renderer;
+		}
+
+		me.renderer	= function(value, metaData, record, rowIndex, colIndex, store, view) {
+			value	= me.getNumericValue(value, record);
+			me.applyCellFormatting(value, metaData, record);
+			if (!Ext.isEmpty(value)) {
+				if ( me.invertValue ) {
+					value *= -1;
+				}
+
+				value	= value/me.factor;
+				value	= me.numberRenderer(value);
+
+				if (me.renderPrefix) {
+					value	= me.renderPrefix + value;
+				} else if (Ext.isFunction(me.renderPrefixCallback)) {
+					value	= me.renderPrefixCallback.call(me, value, record) + value;
+				}
+
+				if (me.renderSuffix) {
+					value	= value + me.renderSuffix;
+				} else if (Ext.isFunction(me.renderSuffixCallback)) {
+					value	= value + me.renderSuffixCallback.call(me, value, record);
+				}
+
+				return cellRenderer.call(me, value, metaData, record, rowIndex, colIndex, store, view);
+			} else {
+				return cellRenderer.call(me, me.stringWhenNull, metaData, record, rowIndex, colIndex, store, view);
+			}
+		}
+	},
+
+<span id='TQ-grid-column-Numeric-method-initComponent'>	initComponent: function() {
+</span>		var me = this;
+		me.initEditableColumn();
+		me.callParent(arguments);
+
+		if (this.editable) {
+			this.on({
+				beforeedit: function(column, editingContext) {
+					if (this.factor !== 1) {
+						editingContext.value	= editingContext.value / this.factor;
+					}
+				},
+				afteredit: function(column, editingContext) {
+					if (this.factor !== 1) {
+						editingContext.value	= editingContext.value * this.factor;
+					}
+				},
+				scope: this
+			});
+		}
+	},
+
+<span id='TQ-grid-column-Numeric-method-getNumericValue'>	getNumericValue: function(v, r) {
+</span>		return v;
+	},
+
+<span id='TQ-grid-column-Numeric-method-applyCellFormatting'>	applyCellFormatting: function(v, m, r) {
+</span>
+	},
+
+<span id='TQ-grid-column-Numeric-method-createEditor'>	createEditor: function() {
+</span>		var me = this;
+		return Ext.apply({}, {
+			xtype: 'tq-numberfield',
+			align: me.align,
+			allowBlank: me.allowBlank,
+			decimalSeparator: TQ_DECIMAL_POINT,
+			decimalPrecision: me.maxPrecision,
+			minValue: me.minValue,
+			cls: 'tq-number-editor'
+		}, me.editorConfig || {});
+	}
+
+});
+</pre>
+</body>
+</html>

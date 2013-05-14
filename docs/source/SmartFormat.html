@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='TQ-util-SmartFormat'>/**
+</span> * @class TQ.util.SmartFormat
+ *
+ * This class contains methods for smart formatting numeric values.
+ *
+ * ## Default settings
+ *
+ * Default settings can be set on the singleton as a fallback if the parameters are omitted
+ * on function calls.
+ *
+ * Settings include:
+ *
+ * - precision
+ * - showThousandSeparator
+ * - stripTrailingZeroes
+ *
+ * ## Using with renderers
+ *
+ * There is a helper function that returns a new function that can be used in conjunction with
+ * grid renderers:
+ *
+ *     columns: [{
+ *         dataIndex: 'value',
+ *         renderer: TQ.util.SmartFormat.numberRenderer()
+ *     }]
+ *
+ * @singleton
+ */
+(function() {
+    Ext.ns('TQ.util');
+
+    TQ.util.SmartFormat = {};
+    var SmartFormat     = TQ.util.SmartFormat,
+        UtilFormat      = TQ.util.Format,
+        defaultStrategy = [{
+            p: function(v, absV) {
+                return absV &gt;= 100;
+            },
+            f: function(value, showThousandSeparator, stripTrailingZeroes) {
+                return UtilFormat.number(value, 0, showThousandSeparator, false);
+            }
+        }, {
+            p: function(v, absV) {
+                return absV &gt;= 10;
+            },
+            f: function(value, showThousandSeparator, stripTrailingZeroes) {
+                return UtilFormat.number(value, 1, showThousandSeparator, stripTrailingZeroes);
+            }
+        }, {
+            p: function(v, absV) {
+                return absV &gt;= 1;
+            },
+            f: function(value, showThousandSeparator, stripTrailingZeroes) {
+                return UtilFormat.number(value, 2, showThousandSeparator, stripTrailingZeroes);
+            }
+        }, {
+            p: function(v, absV) {
+                return absV == 0;
+            },
+            f: function(value, showThousandSeparator, stripTrailingZeroes) {
+                return UtilFormat.number(value, 0, showThousandSeparator, false);
+            }
+        }, {
+            p: function(v, absV) {
+                return absV &gt; Math.pow(10, -1 * 6);
+            },
+            f: function(value, showThousandSeparator, stripTrailingZeroes) {
+                return UtilFormat.number(value, 6, showThousandSeparator, false);
+            }
+        }, {
+            p: function(v, absV) {
+                return true;
+            },
+            f: function(value, showThousandSeparator, stripTrailingZeroes) {
+                var exponent	= 0,
+                    absV	    = Math.abs(value);
+                if (absV &gt; 0) {
+                    exponent	= Math.floor(Math.log(absV) / Math.LN10);
+                }
+
+                if (exponent === 0) {
+                    return UtilFormat.number(value, 6, showThousandSeparator, stripTrailingZeroes);
+                }
+
+                var mantissa	= SmartFormat.number(value / Math.pow(10, exponent));
+                return mantissa + 'e' + exponent;
+            }
+        }];
+
+    Ext.apply(SmartFormat, {
+
+<span id='TQ-util-SmartFormat-property-showThousandSeparator'>        /**
+</span>         * @property {Boolean} showThousandSeparator
+         * The default setting whether the thousand separator should be displayed.
+         */
+        showThousandSeparator: true,
+
+<span id='TQ-util-SmartFormat-property-stripTrailingZeroes'>         /**
+</span>         * @property {Boolean} stripTrailingZeroes
+         * The default setting whether trailing zeroes are to be stripped.
+         */
+        stripTrailingZeroes: true,
+
+        number: function(v, strategy) {
+            if (!Ext.isEmpty(v) &amp;&amp; Ext.isNumber(v)) {
+                strategy    = strategy || defaultStrategy;
+                var absV	= Math.abs(v),
+                    len     = strategy.length,
+                    i;
+                for (i = 0; i &lt; len; i++) {
+                    if (strategy[i].p(v, absV)) {
+                        return strategy[i].f(v, SmartFormat.showThousandSeparator, SmartFormat.stripTrailingZeroes);
+                    }
+                }
+            }
+            return '';
+        },
+
+        numberRenderer: function(strategy) {
+            return function(v) {
+                return SmartFormat.number(v, strategy);
+            };
+        }
+
+    });
+}());</pre>
+</body>
+</html>

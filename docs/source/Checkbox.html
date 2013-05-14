@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='TQ-grid-column-Checkbox'>/**
+</span> * This file contains Javascript code to provide
+ * TEQneers specific ExtJs enhancements
+ *
+ * @author		Stefan Gehrig &lt;gehrig@teqneers.de&gt;
+ * @copyright	2009/10 TEQneers GmbH &amp; Co. KG
+ * @package		TEQframework
+ * @subpackage	javascript
+ * @version		$Revision: 29529 $
+ * @internal	$Id: Checkbox.js 29529 2013-03-14 09:01:27Z stefan $
+ */
+Ext.define('TQ.grid.column.Checkbox', {
+	extend: 'Ext.grid.column.Column',
+	alias: 'widget.tq-checkboxcolumn',
+
+<span id='TQ-grid-column-Checkbox-property-align'>	align: 'center',
+</span>
+<span id='TQ-grid-column-Checkbox-property-checkboxType'>	checkboxType: 'check',
+</span>
+<span id='TQ-grid-column-Checkbox-property-checkedSymbol'>	checkedSymbol: 'x',
+</span><span id='TQ-grid-column-Checkbox-property-uncheckedSymbol'>	uncheckedSymbol: '-',
+</span>
+<span id='TQ-grid-column-Checkbox-property-editable'>	editable: true,
+</span>
+<span id='TQ-grid-column-Checkbox-property-nullIsFalse'>	nullIsFalse: false,
+</span>
+<span id='TQ-grid-column-Checkbox-property-undefinedText'>	undefinedText: '',
+</span><span id='TQ-grid-column-Checkbox-property-nullText'>	nullText: '',
+</span><span id='TQ-grid-column-Checkbox-property-doNotShowText'>	doNotShowText: '',
+</span>
+<span id='TQ-grid-column-Checkbox-method-initComponent'>	initComponent: function() {
+</span>		var me	= this;
+
+		var renderer	= me.renderer || function(v) {
+			return v;
+		};
+
+		me.renderer	= function(value, meta, record, rowIndex, colIndex, store, view) {
+			value	= me.getColumnValue(value, record);
+			if (value === undefined) {
+                return me.undefinedText;
+            } else if (value === null &amp;&amp; !me.nullIsFalse) {
+				return me.nullText;
+			} else if (!me.showCheckbox(value, record)) {
+				return me.doNotShowText;
+			} else {
+				if (!me.canEditRecord(record)) {
+					return renderer(&quot;&lt;div class=\&quot;tq-checkboxcolumn-text\&quot;&gt;&quot;+me.getCheckboxSymbol(value, record, colIndex)+&quot;&lt;/div&gt;&quot;, meta, record, rowIndex, colIndex, store, view);
+				} else {
+					return renderer(&quot;&lt;div class=\&quot;tq-checkboxcolumn &quot;+me.getCheckboxCls(value, record, colIndex)+&quot;\&quot;&gt;&lt;/div&gt;&quot;, meta, record, rowIndex, colIndex, store, view);
+				}
+			}
+		};
+
+		me.callParent(arguments);
+
+		this.addEvents('beforecheckchange', 'checkchange');
+	},
+
+<span id='TQ-grid-column-Checkbox-method-getColumnValue'>	getColumnValue: function(value, record) {
+</span>		return value;
+	},
+
+<span id='TQ-grid-column-Checkbox-method-showCheckbox'>	showCheckbox: function(value, record) {
+</span>		return true;
+	},
+
+<span id='TQ-grid-column-Checkbox-method-canEditRecord'>	canEditRecord: function(record) {
+</span>		return this.editable;
+	},
+
+<span id='TQ-grid-column-Checkbox-method-processEvent'>	processEvent: function(type, view, cell, recordIndex, cellIndex, e) {
+</span>        if (e.getTarget('.tq-checkboxcolumn') &amp;&amp; type == 'click') {
+			var record = view.getStore().getAt(recordIndex);
+			if (this.canEditRecord(record)) {
+				this.onCheckboxClick(record, e, this);
+				return false;
+			}
+		}
+		return this.callParent(arguments);
+    },
+
+<span id='TQ-grid-column-Checkbox-method-getCheckboxCls'>	getCheckboxCls: function(value, record, colIndex) {
+</span>		return &quot;tq-grid-&quot;+this.checkboxType+&quot;-col&quot;+(value?&quot;-on&quot;:&quot;&quot;);
+	},
+
+<span id='TQ-grid-column-Checkbox-method-getCheckboxSymbol'>	getCheckboxSymbol: function(value, record, colIndex) {
+</span>		return (value) ? this.checkedSymbol : this.uncheckedSymbol;
+	},
+
+<span id='TQ-grid-column-Checkbox-method-onCheckboxClick'>	onCheckboxClick: function(record, event, column) {
+</span>		var checked	= !record.get(column.dataIndex);
+		if (this.fireEvent('beforecheckchange', this, checked, record) !== false) {
+			this.setValueOnRecord(record, column.dataIndex, checked, column);
+			this.fireEvent('checkchange', this, checked, record);
+		}
+	},
+
+<span id='TQ-grid-column-Checkbox-method-setValueOnRecord'>	setValueOnRecord: function(record, dataIndex, checked, column) {
+</span>		record.set(dataIndex, checked);
+	}
+});
+</pre>
+</body>
+</html>

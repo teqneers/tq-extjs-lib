@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js"><span id='TQ-util-Format'>/**
+</span> * @class TQ.util.Format
+ *
+ * This class is a centralized place for formatting numeric values.
+ *
+ * ## Localization
+ *
+ * This class contains several options for localization. These can be set once the library has loaded,
+ * all calls to the functions from that point will use the locale settings that were specified.
+ *
+ * Options include:
+ *
+ * - thousandSeparator
+ * - decimalSeparator
+ *
+ * ## Default settings
+ *
+ * Default settings can be set on the singleton as a fallback if the parameters are omitted
+ * on function calls.
+ *
+ * Settings include:
+ *
+ * - precision
+ * - showThousandSeparator
+ * - stripTrailingZeroes
+ *
+ * ## Using with renderers
+ *
+ * There is a helper function that returns a new function that can be used in conjunction with
+ * grid renderers:
+ *
+ *     columns: [{
+ *         dataIndex: 'value',
+ *         renderer: TQ.util.Format.numberRenderer(3, true, false)
+ *     }]
+ *
+ * @singleton
+ */
+(function() {
+    Ext.ns('TQ.util');
+
+    TQ.util.Format = {};
+    var UtilFormat  = TQ.util.Format,
+        ExtFormat   = Ext.util.Format;
+
+    Ext.apply(UtilFormat, {
+
+<span id='TQ-util-Format-property-thousandSeparator'>        /**
+</span>         * @property {String} thousandSeparator
+         * The character that the {@link #number} function uses as a thousand separator.
+         */
+        thousandSeparator: ExtFormat.thousandSeparator,
+
+<span id='TQ-util-Format-property-decimalSeparator'>        /**
+</span>         * @property {String} decimalSeparator
+         * The character that the {@link #number} function uses as a decimal point.
+         */
+        decimalSeparator: ExtFormat.decimalSeparator,
+
+<span id='TQ-util-Format-property-precision'>        /**
+</span>         * @property {Number} precision
+         * The default precision if precision is omitted.
+         */
+        precision: 2,
+
+<span id='TQ-util-Format-property-showThousandSeparator'>        /**
+</span>         * @property {Boolean} showThousandSeparator
+         * The default setting whether the thousand separator should be displayed.
+         */
+        showThousandSeparator: true,
+
+<span id='TQ-util-Format-property-stripTrailingZeroes'>         /**
+</span>         * @property {Boolean} stripTrailingZeroes
+         * The default setting whether trailing zeroes are to be stripped.
+         */
+        stripTrailingZeroes: true,
+
+<span id='TQ-util-Format-method-numberFormatString'>        /**
+</span>         * Returns a format string to be used by `Ext.util.Format.number()`.
+         *
+         * @param   {Number}    precision               The precision to display floating point numbers - defaults to {@link #precision}.
+         * @param   {Boolean}   showThousandSeparator   True to show the thousand separator - defaults to {@link #showThousandSeparator}.
+         * @returns {String}                            The format string.
+         */
+        numberFormatString: function(precision, showThousandSeparator) {
+
+			if (Ext.isEmpty(precision))	{
+				precision	= UtilFormat.precision;
+			}
+			if (Ext.isEmpty(showThousandSeparator))	{
+				showThousandSeparator	= UtilFormat.showThousandSeparator;
+			}
+
+			var format = '0';
+			if ( showThousandSeparator ) {
+				format += UtilFormat.thousandSeparator+'000';
+			}
+            if (precision &gt; 0) {
+			    format	+= UtilFormat.decimalSeparator+''+Ext.String.repeat('0', precision);
+            }
+			if ( UtilFormat.decimalSeparator != '.' ) {
+				format	+= '/i';
+			}
+			return format;
+		},
+
+<span id='TQ-util-Format-method-number'>        /**
+</span>         * Formats the passed number according to the passed parameters.
+         *
+         * @param   {Number}    v                       The number to format.
+         * @param   {Number}    precision               The precision to display floating point numbers - defaults to {@link #precision}.
+         * @param   {Boolean}   showThousandSeparator   True to show the thousand separator - defaults to {@link #showThousandSeparator}.
+         * @param   {Boolean}   stripTrailingZeroes     True to strip trailing zeroes - defaults to {@link #stripTrailingZeroes}.
+         * @return  {String}    The formatted number.
+         */
+        number: function(v, precision, showThousandSeparator, stripTrailingZeroes) {
+			if (Ext.isEmpty(stripTrailingZeroes))	{
+				stripTrailingZeroes	= UtilFormat.stripTrailingZeroes;
+			}
+
+            var format      = UtilFormat.numberFormatString(precision, showThousandSeparator),
+                formatted   = ExtFormat.number(v, format);
+
+			if ( stripTrailingZeroes ) {
+                var	vStr    = String( v );
+
+                // Convert exponential to fixed number
+                if ( vStr.indexOf( 'e' ) !== -1 ) {
+                    vStr = String( Number( vStr ).toFixed() );
+                }
+
+                var list    = vStr.split( '.', 2 );
+                if ( list.length &gt; 1 ) {
+                    var previsionLength	= list[ 1 ].length;
+
+                    // 5615462.6 will be converted wrongly to 5,615,462.5999999996 and shown as 5,615,462.5
+                    // by Ext.util.Format.number, we have to correct this error.
+                    var valueLastDigit  = vStr.charAt( vStr.length - 1 );
+
+                    if ( previsionLength &lt; precision ) {
+                        // Cut last digit and all zeros, e.g. 1,500001 to 1,5
+                        formatted = formatted.replace( new RegExp('\\d{' + ( precision - previsionLength ) + '}$' ), '' );
+                        var formattedLastDigit = formatted.charAt( formatted.length - 1 );
+                        if ( parseInt( formattedLastDigit, 10 ) != valueLastDigit ) {
+                            // Correct rounding error (in our example convert .5 to .6)
+                            // E.g. 5,615,462.5999999996 to 5,615,462.6
+                            formatted = formatted.replace( /\d$/, valueLastDigit );
+                        }
+                    }
+
+					formatted	= formatted.replace(
+						new RegExp(
+							 '((()'
+                            +Ext.String.escapeRegex(UtilFormat.decimalSeparator)
+                            +'0*)|('
+                            +Ext.String.escapeRegex(UtilFormat.decimalSeparator)
+                            +'[0-9]+?)(0*))$'
+						),
+						'$4'
+					);
+				}
+			}
+            return formatted;
+		},
+
+<span id='TQ-util-Format-method-numberRenderer'>        /**
+</span>         * Returns a number rendering function that can be reused to apply a number format multiple
+         * times efficiently.
+         *
+         * @param   {Number}    precision               The precision to display floating point numbers - defaults to {@link #precision}.
+         * @param   {Boolean}   showThousandSeparator   True to show the thousand separator - defaults to {@link #showThousandSeparator}.
+         * @param   {Boolean}   stripTrailingZeroes     True to strip trailing zeroes - defaults to {@link #stripTrailingZeroes}.
+         * @return  {Function}                          The number formatting function
+         */
+        numberRenderer : function(precision, showThousandSeparator, stripTrailingZeroes) {
+            return function(v) {
+                return UtilFormat.number(v, precision, showThousandSeparator, stripTrailingZeroes);
+            };
+        },
+
+        smartNumberRenderer: function(config) {
+			var formatter = new TQ.util.SmartFormat(config);
+			return formatter.numberRenderer();
+		},
+
+		smartNumber: function(v, config) {
+			var formatter = new TQ.util.SmartFormat(config);
+			return formatter.number(v);
+		}
+
+    });
+}());</pre>
+</body>
+</html>
