@@ -597,6 +597,7 @@ Ext.define('TQ.math.Statistic', {
          
         stripTrailingZeroes: true,
 
+        
         number: function(v, strategy) {
             if (!Ext.isEmpty(v) && Ext.isNumber(v)) {
                 strategy    = strategy || defaultStrategy;
@@ -612,6 +613,7 @@ Ext.define('TQ.math.Statistic', {
             return '';
         },
 
+        
         numberRenderer: function(strategy) {
             return function(v) {
                 return SmartFormat.number(v, strategy);

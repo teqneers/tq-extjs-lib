@@ -783,12 +783,10 @@ Ext.define('TQ.math.Statistic', {
  *
  * ## Default settings
  *
- * Default settings can be set on the singleton as a fallback if the parameters are omitted
- * on function calls.
+ * Default settings can be set on the singleton.
  *
  * Settings include:
  *
- * - precision
  * - showThousandSeparator
  * - stripTrailingZeroes
  *
@@ -879,6 +877,13 @@ Ext.define('TQ.math.Statistic', {
          */
         stripTrailingZeroes: true,
 
+        /**
+         * Smartly formats the passed number according to the passed parameters.
+         *
+         * @param   {Number}    v           The number to format.
+         * @param   {Array}     strategy    The precision to display floating point numbers - defaults to {@link #precision}.
+         * @return  {String}                The formatted number.
+         */
         number: function(v, strategy) {
             if (!Ext.isEmpty(v) && Ext.isNumber(v)) {
                 strategy    = strategy || defaultStrategy;
@@ -894,6 +899,13 @@ Ext.define('TQ.math.Statistic', {
             return '';
         },
 
+        /**
+         * Returns a number rendering function that can be reused to apply the smart number format multiple
+         * times efficiently.
+         *
+         * @param   {Array}    strategy     The precision to display floating point numbers - defaults to {@link #precision}.
+         * @return  {Function}               The number formatting function
+         */
         numberRenderer: function(strategy) {
             return function(v) {
                 return SmartFormat.number(v, strategy);
